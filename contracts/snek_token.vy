@@ -1,0 +1,35 @@
+# pragma version 0.4.3
+"""
+@license MIT
+@title snek_token
+@author Jund
+@notice This is an ERC20 token
+"""
+# ------------------------------------------------------------------
+#                             IMPORTS
+# ------------------------------------------------------------------
+from ethereum.ercs import IERC20
+implements: IERC20
+from lib.github.pcaversaccio.snekmate.src.snekmate.auth import ownable as ow
+from lib.github.pcaversaccio.snekmate.src.snekmate.tokens import erc20
+
+exports: erc20.__interface__
+
+initializes: ow
+initializes: erc20[ownable := ow]
+# ------------------------------------------------------------------
+#                         STATE VARIABLES
+# ------------------------------------------------------------------
+NAME: constant(String[25]) = "snek_token"
+SYMBOL: constant(String[5]) = "SNEK"
+DECIMALS: constant(uint8) = 18
+EIP712_VERSION: constant(String[20]) = "1"
+
+# ------------------------------------------------------------------
+#                            FUNCTIONS
+# ------------------------------------------------------------------
+@deploy
+def __init__(initial_supply: uint256):
+    ow.__init__()
+    erc20.__init__(NAME, SYMBOL, DECIMALS, NAME, EIP712_VERSION)
+    erc20._mint(msg.sender, initial_supply)
